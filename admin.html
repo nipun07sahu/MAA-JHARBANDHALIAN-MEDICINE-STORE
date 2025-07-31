@@ -1,0 +1,39 @@
+<!-- ✅ admin.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel - MAA JHARBANDHALIAN</title>
+  <script src="script.js" defer></script>
+  <link href="style.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+</head>
+<body class="bg-gray-100 min-h-screen text-gray-800">
+
+  <header class="bg-blue-800 text-white p-4 text-center shadow">
+    <h1 class="text-3xl font-bold">Admin Dashboard</h1>
+    <p class="text-sm">MAA JHARBANDHALIAN MEDICINE STORE</p>
+  </header>
+
+  <main class="max-w-6xl mx-auto p-6">
+    <section id="adminProductsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></section>
+  </main>
+
+  <script>
+    // ✅ Redirect if not admin
+    if (!localStorage.getItem("isAdmin") || localStorage.getItem("isAdmin") !== "true") {
+      alert("Unauthorized. Redirecting...");
+      window.location.href = "index.html";
+    }
+
+    // ✅ Setup Admin View
+    window.addEventListener("DOMContentLoaded", () => {
+      isAdmin = true;
+      renderAdminDashboard();
+    });
+  </script>
+
+</body>
+</html>
