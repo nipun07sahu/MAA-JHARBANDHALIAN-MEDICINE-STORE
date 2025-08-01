@@ -1,378 +1,406 @@
-<!-- ✅ FIXED index.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>MAA JHARBANDHALIAN MEDICINE STORE</title>
-  <script src="script.js" defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+// ✅ Initial Data
+let products = [
+  { id: 1, name: "NEUROBION FORTE INJ", price: 21.77, stock: 90, expiry: "2026-05", hsn: "30045010", image: "images/neurobion-forte-injection.webp" },
+  { id: 2, name: "PIPERAZINE SUSP", price: 33.95, stock: 14, expiry: "2027-03", hsn: "30049011", image: "images/PIPERAZINE SUSP.jpg" },
+  { id: 3, name: "SKF ENERGY POWDER", price: 16.50, stock: 5, expiry: "2027-01", hsn: "21069099", image: "images/SKF ENERGY POWDER.jpg" },
+  { id: 4, name: "STAYFREE XL 6", price: 48.00, stock: 10, expiry: "2026-12", hsn: "96190010", image: "images/STAYFREE XL 6.webp" },
+  { id: 5, name: "DICLOTAL INJ", price: 5.65, stock: 50, expiry: "2026-11-", hsn: "30041010", image: "images/diclotal.jpeg" },
+  { id: 6, name: "TAXIM 500MG INJ", price: 27.00, stock: 40, expiry: "2026-12", hsn: "30042019", image: "images/TAXIM 500.avif" },
+  { id: 7, name: "CHYAWANPRASH 500 GM", price: 235.00, stock: 30, expiry: "2027-01", hsn: "21069099", image: "images/CHYAWANPRASH.jpg" },
+  { id: 8, name: "LACTODEX-1", price: 1055.00, stock: 20, expiry: "2026-10", hsn: "21069020", image: "images/LACT0183_L.jpg" },
+  { id: 9, name: "Vertistar -MD 8 TAB", price: 65.67, stock: 25, expiry: "2026-09", hsn: "30045090", image: "images/vertistar-md.jpg" },
+  { id: 11, name: "XONE 1GR INJ", price: 71.09, stock: 22, expiry: "2026-11", hsn: "30041090", image: "images/xon0001.webp" },
+  { id: 12, name: "HAJMOLA IMLI SACHET", price: 170.00, stock: 35, expiry: "2026-10", hsn: "30045010", image: "images/losil.webp" },
+  { id: 13, name: "AMLOVAS 5MG TAB", price: 42.00, stock: 60, expiry: "2027-01", hsn: "30049099", image: "images/amlovas.webp" }
+];
 
-</head>
-<body class="min-h-screen bg-gradient-to-b from-white via-[#f0fdf4] to-[#e0f7fa] text-gray-800 bg-fixed bg-cover">
+let cart = [];
+let isAdmin = false;
+let isCustomerLoggedIn = localStorage.getItem("customerLoggedIn") === "true";
 
-
-  <!-- Navbar -->
-  <nav class="bg-white shadow p-4 flex justify-between items-center flex-wrap">
-    <div class="w-full text-center bg-gradient-to-r from-yellow-50 via-white to-yellow-100 py-6 shadow-md rounded-b-xl">
-      <img src="LOGO.png" alt="Logo" class="h-20 w-20 rounded-full shadow mx-auto mb-2" />
-      <h1 class="text-5xl font-extrabold bg-gradient-to-r from-yellow-400 via-yellow-600 to-orange-500 bg-clip-text text-transparent drop-shadow-xl">
-        MAA JHARBANDHALIAN
-      </h1>
-      <span class="text-3xl font-bold bg-gradient-to-r from-blue-400 via-indigo-500 to-purple-600 bg-clip-text text-transparent tracking-wider drop-shadow-lg">
-        MEDICINE STORE
-      </span>
-    </div>
-    
-    
-    
-    <div class="flex flex-wrap items-center gap-2 mt-2 sm:mt-0">
-      <input id="productSearch" type="text" placeholder="Search..." class="border p-1 rounded" />
-      <button id="logoutCustomer" class="bg-red-500 text-white px-3 py-1 rounded hidden">Logout</button>
-      <span id="cartCount" class="font-semibold"></span>
-      <button onclick="document.getElementById('adminLoginModal').classList.remove('hidden')" class="bg-gray-800 text-white px-3 py-1 rounded">Admin Login</button>
-    
-      <a href="https://wa.me/919556381309" target="_blank" class="flex items-center gap-1 px-2">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" class="h-6 w-6" />
-        <span class="text-green-600 font-semibold">Chat</span>
-      </a>
-    </div>
-  </nav>
-
-  <!-- Product Grid -->
-  <section id="mainContent" class="p-4">
-
-    <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-      <!-- JS will render product cards with class "product-card" -->
-    </div>
-  </section>
-  <section class="max-w-6xl mx-auto px-4 py-10">
-    <h2 class="text-3xl font-bold text-green-700 mb-6 text-center">🌟 Featured Products</h2>
-    <div class="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-  
-      <!-- Product 1 -->
-      <div class="bg-white p-4 rounded shadow text-center">
-        <img src="neurobion-forte-injection.webp" alt="NEUROBION FORTE INJ" class="h-32 mx-auto mb-3 object-contain">
-        <h3 class="font-bold text-lg mb-1">NEUROBION FORTE INJ</h3>
-        <p class="text-green-600 font-semibold">₹21.77</p>
-        <button class="mt-2 bg-blue-500 text-white px-3 py-1 rounded">Add to Cart</button>
-      </div>
-  
-      <!-- Product 2 -->
-      <div class="bg-white p-4 rounded shadow text-center">
-        <img src="CHYAWANPRASH.jpg" alt="CHYAWANPRASH 500 GM" class="h-32 mx-auto mb-3 object-contain">
-        <h3 class="font-bold text-lg mb-1">CHYAWANPRASH 500 GM</h3>
-        <p class="text-green-600 font-semibold">₹235.00</p>
-        <button class="mt-2 bg-blue-500 text-white px-3 py-1 rounded">Add to Cart</button>
-      </div>
-  
-      <!-- Product 3 -->
-      <div class="bg-white p-4 rounded shadow text-center">
-        <img src="amlovas.webp" alt="AMLOVAS 5MG TAB" class="h-32 mx-auto mb-3 object-contain">
-        <h3 class="font-bold text-lg mb-1">AMLOVAS 5MG TAB</h3>
-        <p class="text-green-600 font-semibold">₹42.00</p>
-        <button class="mt-2 bg-blue-500 text-white px-3 py-1 rounded">Add to Cart</button>
-      </div>
-  
-      <!-- Product 4 -->
-      <div class="bg-white p-4 rounded shadow text-center">
-        <img src="losil.webp" alt="HAJMOLA IMLI SACHET" class="h-32 mx-auto mb-3 object-contain">
-        <h3 class="font-bold text-lg mb-1">HAJMOLA IMLI SACHET</h3>
-        <p class="text-green-600 font-semibold">₹170.00</p>
-        <button class="mt-2 bg-blue-500 text-white px-3 py-1 rounded">Add to Cart</button>
-      </div>
-  
-    </div>
-    <section class="bg-white py-8 mt-10 shadow-inner">
-      <div class="max-w-6xl mx-auto px-4">
-        <h2 class="text-center text-2xl font-bold text-green-700 mb-6">Why Shop With Us</h2>
-    
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 text-center">
-    
-          <div>
-            <i class="fas fa-certificate text-3xl text-green-600"></i>
-            <p class="text-sm mt-2 font-medium">100% Genuine Medicines</p>
-          </div>
-    
-          <div>
-            <i class="fas fa-lock text-3xl text-blue-600"></i>
-            <p class="text-sm mt-2 font-medium">Secure Payments</p>
-          </div>
-    
-          <div>
-            <i class="fas fa-user-md text-3xl text-yellow-600"></i>
-            <p class="text-sm mt-2 font-medium">Licensed Pharmacy</p>
-          </div>
-    
-          <div>
-            <i class="fas fa-truck text-3xl text-indigo-600"></i>
-            <p class="text-sm mt-2 font-medium">Fast Local Delivery</p>
-          </div>
-    
-          <div>
-            <i class="fas fa-undo text-3xl text-red-600"></i>
-            <p class="text-sm mt-2 font-medium">Easy Returns (48 hrs)</p>
-          </div>
-    
-        </div>
-      </div>
-    </section>
-    
-  
-  <!-- Cart Section -->
-  <section class="p-4">
-    <h2 class="text-xl font-semibold">Cart</h2>
-    <div id="cartItems" class="space-y-2 mt-2"></div>
-    <div id="cartSummary" class="mt-4 font-semibold"></div>
-    <div id="offerSection" class="text-green-600 font-medium mt-2"></div>
-
-    <h3 class="text-lg mt-6">Customer Details</h3>
-    <div class="grid grid-cols-2 gap-4 mt-2">
-      <input id="customerName" placeholder="Name" class="border p-2 rounded" />
-      <input id="customerPhone" placeholder="Phone" class="border p-2 rounded" />
-      <input id="customerAddress" placeholder="Address" class="border p-2 rounded" />
-      <input id="customerPincode" placeholder="Pincode" class="border p-2 rounded" />
-    </div>
-    <!-- Payment Options -->
-<div class="mt-6">
-  <h3 class="text-lg font-semibold mb-2">Choose Payment Option</h3>
-  <div class="space-x-4">
-    <button onclick="handleOrder()" class="bg-green-600 text-white px-4 py-2 rounded">Cash on Delivery</button>
-    <button onclick="showUPIPayment()" class="bg-purple-700 text-white px-4 py-2 rounded">Pay with UPI</button>
-  </div>
-</div>
-
-<div id="orderSuccess" class="mt-4 text-green-700 font-bold hidden"></div>
-
-  <!-- Admin Dashboard Placeholder -->
-  <section id="adminDashboard" class="hidden p-4">
-    <h2 class="text-xl font-bold text-blue-800">Admin Dashboard</h2>
-    <div id="adminProductsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4"></div>
-  </section>
-
-  <!-- Dummy Admin Login Modal -->
-  <!-- ✅ Admin Login Modal (Redesigned) -->
-<div id="adminLoginModal" class="modal hidden">
-  <div class="modal-content max-w-sm w-full text-left">
-    <h3 class="text-2xl font-bold text-blue-700 mb-4 text-center">🔐 Admin Login</h3>
-    <form id="adminLoginForm" class="space-y-4">
-      <div>
-        <label for="loginUsername" class="block text-sm font-medium text-gray-700">Username</label>
-        <input id="loginUsername" type="text" required
-          class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
-      </div>
-
-      <div>
-        <label for="loginPassword" class="block text-sm font-medium text-gray-700">Password</label>
-        <input id="loginPassword" type="password" required
-          class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
-      </div>
-
-      <button type="submit"
-        class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded transition duration-200">
-        Login as Admin
-      </button>
-    </form>
-    <p class="text-xs text-gray-400 mt-4 text-center">For authorized users only</p>
-  </div>
-</div>
-
-
-  <!-- Toggle Section Utility Script (only once) -->
-  <script>
-    function toggleSection(id) {
-      const el = document.getElementById(id);
-      if (el) el.classList.toggle('hidden');
-    }
-    // ✅ Toggle Show Password
-function togglePassword() {
-  const input = document.getElementById("loginPassword");
-  input.type = input.type === "password" ? "text" : "password";
+// ✅ Customer Auth
+function showCustomerLogin() {
+  document.getElementById("customerLoginModal").classList.remove("hidden");
+}
+function hideCustomerLogin() {
+  document.getElementById("customerLoginModal").classList.add("hidden");
+}
+function showSignup() {
+  document.getElementById("customerLoginModal").classList.add("hidden");
+  document.getElementById("customerSignupModal").classList.remove("hidden");
+}
+function hideSignup() {
+  document.getElementById("customerSignupModal").classList.add("hidden");
+}
+function logoutCustomer() {
+  localStorage.removeItem("customerLoggedIn");
+  isCustomerLoggedIn = false;
+  location.reload();
 }
 
-  </script>
-  <div id="upiModal" class="modal hidden">
-    <div class="modal-content text-center">
-      <h3 class="text-lg font-semibold mb-3 text-green-700">Scan to Pay</h3>
-      <img src="images/upi-qr.png" alt="QR Code" class="w-48 mx-auto border rounded mb-3" />
-      <p class="mb-2">or send to UPI ID:</p>
-      <p class="font-mono text-sm text-gray-700 mb-4">📱 <b>6372556219@pptaxis</b></p>
-      <button onclick="confirmUPIPayment()" class="bg-green-600 text-white px-4 py-2 rounded">I have paid</button>
-      <button onclick="document.getElementById('upiModal').classList.add('hidden')" class="text-red-500 mt-3">Cancel</button>
-    </div>
-  </div>
-  <!-- UPI Payment Modal -->
-<div id="upiModal" class="modal hidden">
-  <div class="modal-content text-center">
-    <h3 class="text-xl font-semibold text-green-700 mb-3">Scan & Pay via UPI</h3>
-    <img src="images/upi-qr.png" alt="UPI QR Code" class="w-48 mx-auto border rounded mb-3" />
-    <p class="mb-2">or send manually to this UPI ID:</p>
-    <p class="text-lg font-mono text-gray-800 font-semibold mb-4">📱 6372556219@ptsbi</p>
-    <button onclick="confirmUPIPayment()" class="bg-green-600 text-white px-4 py-2 rounded">I have paid</button>
-    <br />
-    <button onclick="document.getElementById('upiModal').classList.add('hidden')" class="mt-3 text-red-500 underline">Cancel</button>
-  </div>
-</div>
-<!-- ✅ Customer Login Modal -->
-<div id="customerLoginModal" class="modal hidden">
-  <div class="modal-content">
-    <form id="customerLoginForm">
-      <h3 class="text-lg font-semibold mb-2">Customer Login</h3>
-      <input id="loginPhone" type="text" placeholder="Phone Number" required />
-      <input id="loginPassword" type="password" placeholder="Password" required />
-      <button type="submit" class="bg-blue-600 text-white mt-2 px-4 py-1 rounded">Login</button>
-    </form>
-    <p class="mt-2 text-sm">New user? <a href="#" id="showSignup" class="text-green-600 underline">Sign up here</a></p>
-  </div>
-</div>
-
-<!-- ✅ Customer Signup Modal -->
-<div id="customerSignupModal" class="modal hidden">
-  <div class="modal-content">
-    <form id="customerSignupForm">
-      <h3 class="text-lg font-semibold mb-2">Customer Signup</h3>
-      <input id="signupName" type="text" placeholder="Full Name" required />
-      <input id="signupPhone" type="text" placeholder="Phone Number" required />
-      <input id="signupPassword" type="password" placeholder="Password" required />
-      <button type="submit" class="bg-green-600 text-white mt-2 px-4 py-1 rounded">Sign Up</button>
-    </form>
-    <p class="mt-2 text-sm"><a href="#" id="closeSignup" class="text-red-500 underline">Cancel</a></p>
-  </div>
-</div>
-<!-- ✅ Admin Login Modal (Full Enhanced Version) -->
-<div id="adminLoginModal" class="modal hidden z-50">
-  <div class="modal-content max-w-sm w-full relative bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
-
-    <!-- Close Button -->
-    <button onclick="document.getElementById('adminLoginModal').classList.add('hidden')"
-      class="absolute top-3 right-4 text-red-500 text-xl hover:text-red-700">
-      &times;
-    </button>
-
-    <h3 class="text-2xl font-bold text-center text-blue-700 dark:text-blue-400 mb-4">🔐 Admin Login</h3>
-
-    <form id="adminLoginForm" class="space-y-4">
-
-      <!-- Username -->
-      <div>
-        <label for="loginUsername" class="block text-sm font-medium">Username</label>
-        <input id="loginUsername" type="text" required
-          class="mt-1 w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600" />
+// ✅ Product Rendering for Customer
+function renderProducts() {
+  const productsGrid = document.getElementById("productsGrid");
+  if (!productsGrid) return;
+  productsGrid.innerHTML = "";
+  products.forEach(p => {
+    const div = document.createElement("div");
+    div.className = "product-card bg-white shadow rounded-lg p-4 text-sm";
+    div.innerHTML = `
+      <img src="${p.image}" alt="${p.name}" class="h-32 mx-auto object-contain mb-2" />
+      <div class="text-center">
+        <h3 class="font-bold">${p.name}</h3>
+        <p>Price: ₹${p.price}</p>
+        <p>Stock: ${p.stock}</p>
+        <p>Expiry: ${p.expiry}</p>
       </div>
-
-      <!-- Password with toggle -->
-      <div>
-        <label for="loginPassword" class="block text-sm font-medium">Password</label>
-        <div class="relative">
-          <input id="loginPassword" type="password" required
-            class="mt-1 w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600" />
-          <span onclick="togglePassword()"
-            class="absolute inset-y-0 right-3 flex items-center text-sm text-gray-500 hover:text-blue-600 cursor-pointer select-none">
-            👁
-          </span>
-        </div>
+      <div class="mt-2 flex justify-center gap-2">
+        <button onclick="addToCart(${p.id})" class="bg-blue-500 text-white px-2 py-1 rounded">Add</button>
+        ${isAdmin ? `<button onclick="editProduct(${p.id})" class="bg-yellow-400 text-white px-2 py-1 rounded">Edit</button>` : ""}
       </div>
+    `;
+    productsGrid.appendChild(div);
+  });
+}
 
-      <button type="submit"
-        class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded transition duration-200">
-        Login as Admin
-      </button>
-    </form>
+// ✅ Admin Dashboard Renderer
+function renderAdminDashboard() {
+  const grid = document.getElementById("adminProductsGrid");
+  grid.innerHTML = "";
+  products.forEach(p => {
+    const div = document.createElement("div");
+    div.className = "product-card";
+    div.innerHTML = `
+      <img src="${p.image}" alt="${p.name}" />
+      <div class="product-info">
+        <h3>${p.name}</h3>
+        <p>₹${p.price}</p>
+        <p>Stock: ${p.stock}</p>
+        <p>Expiry: ${p.expiry}</p>
+      </div>
+      <div class="admin-btns">
+        <button class="edit-btn" onclick="editProduct(${p.id})">Edit</button>
+        <button class="delete-btn" onclick="deleteProduct(${p.id})">Delete</button>
+      </div>
+    `;
+    grid.appendChild(div);
+  });
+}
 
-    <p class="text-xs text-center text-gray-400 dark:text-gray-500 mt-4">For authorized users only</p>
-  </div>
-</div>
+function deleteProduct(id) {
+  if (confirm("Delete this product?")) {
+    products = products.filter(p => p.id !== id);
+    renderProducts();
+    renderAdminDashboard();
+  }
+}
 
-</body>
-</html>
+function editProduct(id) {
+  const product = products.find(p => p.id === id);
+  const name = prompt("Enter name:", product.name);
+  const price = parseFloat(prompt("Enter price:", product.price));
+  const stock = parseInt(prompt("Enter stock:", product.stock));
+  const expiry = prompt("Enter expiry date:", product.expiry);
+  if (name && !isNaN(price) && !isNaN(stock) && expiry) {
+    product.name = name;
+    product.price = price;
+    product.stock = stock;
+    product.expiry = expiry;
+    renderProducts();
+    renderAdminDashboard();
+    alert("Product updated.");
+  }
+}
+
+// ✅ Cart
+function addToCart(id) {
+  const product = products.find(p => p.id === id);
+  if (product.stock <= 0) return alert("Out of stock");
+  const item = cart.find(i => i.id === id);
+  if (item) item.quantity++;
+  else cart.push({ ...product, quantity: 1 });
+  renderCart();
+}
+
+function removeFromCart(id) {
+  cart = cart.filter(i => i.id !== id);
+  renderCart();
+}
+
+function changeQuantity(id, qty) {
+  const item = cart.find(i => i.id === id);
+  if (item && qty > 0) item.quantity = parseInt(qty);
+  renderCart();
+}
+
+function renderCart() {
+  const cartItems = document.getElementById("cartItems");
+  const cartSummary = document.getElementById("cartSummary");
+  const offer = document.getElementById("offerSection");
+  const count = document.getElementById("cartCount");
+  cartItems.innerHTML = "";
+  let total = 0;
+  let items = 0;
+  cart.forEach(c => {
+    items += c.quantity;
+    total += c.quantity * c.price;
+    const div = document.createElement("div");
+    div.className = "flex justify-between items-center mb-2";
+    div.innerHTML = `
+      <div>
+        <b>${c.name}</b> - ₹${c.price} × 
+        <input type="number" value="${c.quantity}" min="1" onchange="changeQuantity(${c.id}, this.value)" class="w-12 border text-center" />
+      </div>
+      <button onclick="removeFromCart(${c.id})" class="text-red-500">❌</button>
+    `;
+    cartItems.appendChild(div);
+  });
+  const cashback = items >= 5 ? total * 0.05 : 0;
+  const gst = total * 0.05;
+  const final = total - cashback + gst;
+  cartSummary.innerHTML = `
+    <div>Total: ₹${total.toFixed(2)}</div>
+    <div>Cashback: ₹${cashback.toFixed(2)}</div>
+    <div>GST: ₹${gst.toFixed(2)}</div>
+    <div><b>Final: ₹${final.toFixed(2)}</b></div>
+    <button onclick="printInvoice(${final.toFixed(2)})" class="mt-2 bg-green-500 text-white px-3 py-1 rounded">🧾 Print Bill</button>
+  `;
+  count.textContent = items;
+  offer.textContent = cashback > 0 ? `Congrats! ₹${cashback.toFixed(2)} cashback` : "";
+}
+
+function printInvoice(finalAmount) {
+  const name = document.getElementById("customerName").value;
+  const phone = document.getElementById("customerPhone").value;
+  const addr = document.getElementById("customerAddress").value;
+  const pin = document.getElementById("customerPincode").value;
+  let html = `<h2>Customer Invoice</h2><hr>`;
+  html += `<b>Name:</b> ${name}<br><b>Phone:</b> ${phone}<br><b>Address:</b> ${addr} - ${pin}<br><hr>`;
+  html += `<table border='1' cellpadding='5' cellspacing='0'><tr><th>Name</th><th>Qty</th><th>Rate</th><th>Total</th></tr>`;
+  cart.forEach(c => {
+    html += `<tr><td>${c.name}</td><td>${c.quantity}</td><td>₹${c.price}</td><td>₹${(c.price * c.quantity).toFixed(2)}</td></tr>`;
+  });
+  html += `</table><br><b>Total Amount: ₹${finalAmount}</b>`;
+  const w = window.open();
+  w.document.write(html);
+  w.print();
+  w.close();
+}
+
+// ✅ Order
+let latestOrderId = "";
+
+function handleOrder() {
+  if (cart.length === 0) return alert("Cart is empty");
+
+  const name = document.getElementById("customerName").value;
+  const phone = document.getElementById("customerPhone").value;
+  const addr = document.getElementById("customerAddress").value;
+  const pin = document.getElementById("customerPincode").value;
+
+  if (!name || !phone || !addr || !pin) return alert("Fill all details");
+
+  const latestOrderId = "ORDER" + Math.floor(Math.random() * 1000000);
+
+  const newOrder = {
+    id: latestOrderId,
+    name,
+    phone,
+    address: addr,
+    pincode: pin,
+    items: [...cart],
+    status: "Pending"
+  };
+
+  // Store or push to database here if needed
+
+  const eta = new Date(Date.now() + 2 * 60 * 60 * 1000); // 2 hours from now
+  const deliveryTime = eta.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  
+  document.getElementById("orderSuccess").innerHTML =
+    `✅ <b>Order Placed!</b><br>Your order will be delivered by <b>${deliveryTime}</b>.<br>Thank you for shopping with us!`;
+  
+  document.getElementById("orderSuccess").classList.remove("hidden");
+  const adminWhatsApp = "919556381309"; // ✅ No + and no space
+
+  const orderDetails = newOrder.items.map(
+    item => `${item.name} × ${item.quantity}`
+  ).join('\n');
+  
+  const message = `*New Order Received*\n\nName: ${name}\nPhone: ${phone}\nAddress: ${addr} - ${pin}\n\nItems:\n${orderDetails}\n\nTotal: ₹${total.toFixed(2)}`;
+  const url = `https://wa.me/${adminWhatsApp}?text=${encodeURIComponent(message)}`;
+  window.open(url, "_blank");
+  
+  cart = [];
+  renderCart();
+}
 
 
-  <!-- Modals (Login, Signup, Admin Login) -->
-  <!-- ... (No change here, same as your original) -->
+function approveOrder(id) {
+  const order = orders.find(o => o.id === id);
+  if (!order) return alert("Order not found!");
+  order.status = "Approved ✅";
+  renderOrders();
 
-  <script>
-    function toggleSection(id) {
-      const el = document.getElementById(id);
-      if (el) el.classList.toggle('hidden');
+  const trackingURL = "track.html?id=" + order.id;
+  document.getElementById("trackingLink").href = trackingURL;
+  document.getElementById("customerNotify").classList.remove("hidden");
+}
+
+
+
+// ✅ Customer Login
+function customerLoginHandler(e) {
+  e.preventDefault();
+  const phone = document.getElementById("loginPhone").value;
+  const pass = document.getElementById("loginPassword").value;
+  const users = JSON.parse(localStorage.getItem("users") || "[]");
+  const match = users.find(u => u.phone === phone && u.password === pass);
+  if (match) {
+    localStorage.setItem("customerLoggedIn", "true");
+    isCustomerLoggedIn = true;
+    hideCustomerLogin();
+    document.getElementById("mainContent").classList.remove("hidden");
+    renderProducts();
+    renderCart();
+  } else alert("Invalid phone or password");
+}
+
+// ✅ Signup
+function customerSignupHandler(e) {
+  e.preventDefault();
+  const name = document.getElementById("signupName").value;
+  const phone = document.getElementById("signupPhone").value;
+  const pass = document.getElementById("signupPassword").value;
+  let users = JSON.parse(localStorage.getItem("users") || "[]");
+  if (users.find(u => u.phone === phone)) return alert("Phone already registered");
+  users.push({ name, phone, password: pass });
+  localStorage.setItem("users", JSON.stringify(users));
+  alert("Signup successful");
+  hideSignup();
+  showCustomerLogin();
+}
+
+// ✅ Search
+function handleSearch() {
+  const name = card.querySelector("h3").textContent.toLowerCase();
+
+  document.querySelectorAll("#productsGrid .product-card").forEach(card => {
+    const name = card.querySelector(".product-info b").textContent.toLowerCase();
+    card.style.display = name.includes(term) ? "" : "none";
+  });
+}
+
+// ✅ PDF Upload
+async function extractPdfText(data) {
+  const pdfjs = window['pdfjs-dist/build/pdf'];
+  pdfjs.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+  const doc = await pdfjs.getDocument({ data }).promise;
+  let text = '';
+  for (let i = 1; i <= doc.numPages; i++) {
+    const page = await doc.getPage(i);
+    const content = await page.getTextContent();
+    text += content.items.map(item => item.str).join(' ') + "\n";
+  }
+  return text;
+}
+
+function parseProductsFromText(text) {
+  const lines = text.split("\n");
+  let added = 0;
+  lines.forEach(line => {
+    const match = line.match(/\d+\.\s*(.+?)\s+(\d+(\.\d{1,2})?)/);
+    if (match) {
+      const name = match[1];
+      const price = parseFloat(match[2]);
+      products.push({
+        id: Date.now() + Math.floor(Math.random() * 1000),
+        name,
+        price,
+        stock: 10,
+        expiry: "2026-12-31",
+        hsn: "00000000",
+        image: ""
+      });
+      added++;
     }
-    </script>
-    
-    <script>
-      function toggleSection(id) {
-        const el = document.getElementById(id);
-        if (el) el.classList.toggle('hidden');
-      }
-      if (u === "Nipun31@" && p === "NIPUN07@") {
-  isAdmin = true;
-  document.getElementById("adminLoginModal").classList.add("hidden");
-  alert("✅ Admin login successful");
-
-  // Optional: Redirect to admin section
-  document.getElementById("adminDashboard").classList.remove("hidden");
-  document.getElementById("mainContent").classList.add("hidden");
-
+  });
+  alert(`${added} products added from PDF.`);
   renderProducts();
   renderAdminDashboard();
-
-  // OR redirect to another page
-  // window.location.href = "admin.html";
 }
 
-      </script>
- <footer class="bg-gray-900 text-white py-10 mt-10">
-  <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+// ✅ Admin Login
+function adminLoginHandler(e) {
+  e.preventDefault();
+  const u = document.getElementById("loginUsername").value;
+  const p = document.getElementById("loginPassword").value;
+  if (u === "Nipun31@" && p === "NIPUN07@") {
+    isAdmin = true;
+    localStorage.setItem("isAdmin", "true");
+    alert("Admin login successful");
+    document.getElementById("adminDashboard").classList.remove("hidden");
+    document.getElementById("adminLoginModal").classList.add("hidden");
+    renderProducts();
+    renderAdminDashboard();
+  } else alert("Invalid admin credentials");
+}
+function showUPIPayment() {
+  if (cart.length === 0) return alert("Cart is empty");
 
-    <!-- Important Links -->
-    <div>
-      <h3 class="text-lg font-bold mb-3 text-yellow-400">Important Links</h3>
-      <ul class="space-y-2 text-sm">
-        <li><a href="about.html" class="hover:text-yellow-300">About Us</a></li>
-        <li><a href="contact.html" class="hover:text-yellow-300">Contact Us</a></li>
-        <li><a href="privacy.html" class="hover:text-yellow-300">Privacy Policy</a></li>
-        <li><a href="terms.html" class="hover:text-yellow-300">Terms & Conditions</a></li>
-        <li><a href="faqs.html" class="hover:text-yellow-300">FAQs</a></li>
-      </ul>
-    </div>
+  const name = document.getElementById("customerName").value;
+  const phone = document.getElementById("customerPhone").value;
+  const addr = document.getElementById("customerAddress").value;
+  const pin = document.getElementById("customerPincode").value;
 
-    <!-- Store Info -->
-    <div>
-      <h3 class="text-lg font-bold mb-3 text-yellow-400">Store Info</h3>
-      <p class="text-sm">
-        MAA JHARBANDHALIAN MEDICINE STORE<br>
-        AT - Fatamunda, Dist - Balangir<br>
-        Odisha, 767061<br>
-        Phone: <a href="tel:+919556381309" class="text-blue-400 hover:underline">+91-95563 81309</a>
-      </p>
-    </div>
+  if (!name || !phone || !addr || !pin) {
+    return alert("Please fill all customer details before payment.");
+  }
 
-    <!-- Social Media (optional) -->
-    <div>
-      <h3 class="text-lg font-bold mb-3 text-yellow-400">Connect</h3>
-      <div class="flex gap-4 text-2xl">
-        <a href="#" title="Facebook" class="hover:text-blue-500"><i class="fab fa-facebook"></i></a>
-        <a href="#" title="Instagram" class="hover:text-pink-400"><i class="fab fa-instagram"></i></a>
-        <a href="https://wa.me/919556381309" title="WhatsApp" class="hover:text-green-400"><i class="fab fa-whatsapp"></i></a>
-      </div>
-    </div>
-    
+  document.getElementById("upiModal").classList.remove("hidden");
+}
 
-    <!-- founder Info -->
-    <div class="flex flex-col items-center sm:items-end text-center sm:text-right">
-      <img src="your-photo.png" alt="Founder Photo" class="w-24 h-24 rounded-full shadow-lg border-2 border-white mb-2 object-cover" />
-      <p class="text-lg font-semibold text-yellow-300">NIPUN SAHU (FOUNDER)</p>
-      <p class="text-sm text-gray-400">MAA JHARBANDHALIAN<br>MEDICINE STORE</p>
-    </div>
-  </div>
+function confirmUPIPayment() {
+  document.getElementById("upiModal").classList.add("hidden");
 
-  <!-- Bottom line -->
-  <div class="text-center mt-6 text-gray-500 text-xs">
-    &copy; 2025 MAA JHARBANDHALIAN MEDICINE STORE |</span>
-    <br>
-    <a href="#top" class="text-blue-400 hover:underline">Back to Top ↑</a>
-  </div>
-</footer>
+  // Call order placing function
+  handleOrder();
 
-</html>
+  // Show a friendly confirmation message
+  const successBox = document.getElementById("orderSuccess");
+  successBox.innerText = "✅ Payment confirmed! Your order has been placed successfully.";
+  successBox.classList.remove("hidden");
+
+  // Optional: Scroll to success message
+  successBox.scrollIntoView({ behavior: "smooth" });
+}
+
+
+// ✅ INIT
+window.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("mainContent").classList.remove("hidden");
+renderProducts();
+renderCart();
+if (!isCustomerLoggedIn) showCustomerLogin();
+
+
+  document.getElementById("customerLoginForm")?.addEventListener("submit", customerLoginHandler);
+  document.getElementById("customerSignupForm")?.addEventListener("submit", customerSignupHandler);
+  document.getElementById("showSignup")?.addEventListener("click", showSignup);
+  document.getElementById("closeSignup")?.addEventListener("click", hideSignup);
+  document.getElementById("logoutCustomer")?.addEventListener("click", logoutCustomer);
+  document.getElementById("productSearch")?.addEventListener("input", handleSearch);
+  document.getElementById("orderNowBtn")?.addEventListener("click", handleOrder);
+  document.getElementById("adminLoginForm")?.addEventListener("submit", adminLoginHandler);
+
+  document.getElementById("pdfUploader")?.addEventListener("change", e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const text = await extractPdfText(reader.result);
+      parseProductsFromText(text);
+    };
+    reader.readAsArrayBuffer(file);
+  });
+});
