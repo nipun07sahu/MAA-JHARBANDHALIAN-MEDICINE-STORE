@@ -1,6 +1,133 @@
-<script>
-    const params = new URLSearchParams(window.location.search);
-    const orderId = params.get("id");
-    document.getElementById("trackingResult").innerText = "Tracking Order: " + orderId + " – Status: Approved";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Track Order - MAA JHARBANDHALIAN</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-br from-green-100 to-blue-100 min-h-screen flex items-center justify-center p-4 font-sans">
+
+  <div class="bg-white p-6 rounded-xl shadow-xl w-full max-w-2xl">
+    <h1 class="text-3xl font-bold text-center text-green-700 mb-6">📦 Track Your Order</h1>
+
+    <div class="flex gap-2 mb-6">
+      <input id="orderTrackInput" type="text" placeholder="Enter Order ID (e.g. ORDER123456)" class="flex-1 border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400" />
+      <button onclick="trackMyOrder()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition">Track</button>
+    </div>
+
+    <div id="result" class="space-y-4 text-gray-800"></div>
+  </div>
+
+  <script>
+    async function trackMyOrder() {
+      const id = document.getElementById("orderTrackInput").value.trim();
+      if (!id) return alert("Please enter a valid Order ID.");
+      showOrderDetails(id);
+    }
+
+    function showOrderDetails(orderId) {
+      const orders = JSON.parse(localStorage.getItem("orderHistory") || "[]");
+      const order = orders.find(o => o.id === orderId);
+      const result = document.getElementById("result");
+
+      if (!order) {
+        result.innerHTML = `<p class="text-red-600 font-semibold">❌ Order not found. Please check the Order ID.</p>`;
+        return;
+      }
+
+      let itemsHTML = order.items.map(i => `<li>${i.name} × ${i.quantity}</li>`).join("");
+
+      result.innerHTML = `
+  <div class="bg-gray-100 p-4 rounded-lg border border-gray-300">
+    <p><b>🆔 Order ID:</b> ${order.id}</p>
+    <p><b>📅 Date:</b> ${order.date}</p>
+    <p><b>🙍‍♂️ Name:</b> ${order.name}</p>
+    <p><b>📞 Phone:</b> ${order.phone}</p>
+    <p><b>🏠 Address:</b> ${order.address}, ${order.pincode}</p>
+    <p><b>📦 Status:</b> <span class="text-green-600 font-bold">${order.status}</span></p>
+    <p><b>⏰ Delivery ETA:</b> ${order.eta || "Not available"}</p>
+    <hr class="my-2">
+    <p><b>🛒 Items:</b></p>
+    <ul class="list-disc list-inside text-gray-700">${itemsHTML}</ul>
+    <hr class="my-2">
+    <p><b>💰 Total:</b> ₹${order.total}</p>
+  </div>
+  <button onclick="downloadInvoice('${order.id}')" class="mt-4 bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg shadow">
+    📥 Download PDF Invoice
+  </button>
+`;
+let progress = 0;
+switch (order.status) {
+  case "Pending":
+    progress = 25;
+    break;
+  case "Approved ✅":
+    progress = 50;
+    break;
+  case "Out for Delivery 🚚":
+    progress = 75;
+    break;
+  case "Delivered ✅":
+    progress = 100;
+    break;
+}
+
+document.getElementById("progressFill").style.width = progress + "%";
+
+
+    async function downloadInvoice(orderId) {
+      const orders = JSON.parse(localStorage.getItem("orderHistory") || "[]");
+      const order = orders.find(o => o.id === orderId);
+      if (!order) return alert("Order not found.");
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      doc.setFontSize(14);
+      doc.text("📄 Invoice - MAA JHARBANDHALIAN MEDICINE STORE", 10, 15);
+      doc.setFontSize(12);
+      doc.text(`Order ID: ${order.id}`, 10, 25);
+      doc.text(`Date: ${order.date}`, 10, 32);
+      doc.text(`Name: ${order.name}`, 10, 39);
+      doc.text(`Phone: ${order.phone}`, 10, 46);
+      doc.text(`Address: ${order.address}, ${order.pincode}`, 10, 53);
+      doc.text(`Status: ${order.status}`, 10, 60);
+
+      doc.text("Items:", 10, 70);
+      let y = 78;
+      order.items.forEach(i => {
+        doc.text(`- ${i.name} × ${i.quantity}`, 12, y);
+        y += 7;
+      });
+
+      doc.text(`Total: ₹${order.total}`, 10, y + 5);
+      doc.save(`${order.id}_invoice.pdf`);
+    }
+
+    // Auto-track via ?id=ORDER123456
+    window.addEventListener("DOMContentLoaded", () => {
+      const params = new URLSearchParams(location.search);
+      const id = params.get("id");
+      if (id) {
+        document.getElementById("orderTrackInput").value = id;
+        showOrderDetails(id);
+      }
+    });
   </script>
-  
+  <div class="mt-6">
+  <h3 class="font-semibold text-lg mb-2">📦 Order Tracking Progress</h3>
+  <div class="flex justify-between items-center text-sm text-gray-600">
+    <div class="flex-1 text-center">Pending</div>
+    <div class="flex-1 text-center">Approved</div>
+    <div class="flex-1 text-center">Out for Delivery</div>
+    <div class="flex-1 text-center">Delivered</div>
+  </div>
+  <div class="relative w-full h-3 bg-gray-300 rounded-full mt-2">
+    <div id="progressFill" class="absolute top-0 left-0 h-full bg-green-500 rounded-full transition-all duration-700 ease-in-out" style="width: 25%;"></div>
+  </div>
+</div>
+
+  </body>
+</html>
