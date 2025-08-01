@@ -198,13 +198,12 @@ function handleOrder() {
   const addr = document.getElementById("customerAddress").value.trim();
   const pin = document.getElementById("customerPincode").value.trim();
 
-  if (!name || !phone || !addr || !pin) {
-    alert("Please fill all details");
-    return;
-  }
+  if (!name || !phone || !addr || !pin) return alert("Fill all details");
 
-  const latestOrderId = "ORDER" + Math.floor(Math.random() * 1000000);
-
+  const etaTime = new Date(Date.now() + 2 * 60 * 60 * 1000); // 2 hours from now
+  const etaString = etaTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const etaDate = etaTime.toLocaleDateString();
+  
   const newOrder = {
     id: latestOrderId,
     name,
@@ -212,32 +211,36 @@ function handleOrder() {
     address: addr,
     pincode: pin,
     items: [...cart],
-    status: "Pending"
+    total: total.toFixed(2),
+    status: "Pending",
+    date: new Date().toLocaleString(),
+    eta: `Today by ${etaString}`
   };
+  
 
-  const eta = new Date(Date.now() + 2 * 60 * 60 * 1000);
-  const deliveryTime = eta.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  // ✅ Save to order history in localStorage
+  let history = JSON.parse(localStorage.getItem("orderHistory") || "[]");
+  history.push(newOrder);
+  localStorage.setItem("orderHistory", JSON.stringify(history));
 
-  document.getElementById("orderSuccess").innerHTML =
-    `✅ <b>Order Placed!</b><br>Your order will be delivered by <b>${deliveryTime}</b>.<br>Thank you for shopping with us!`;
-  document.getElementById("orderSuccess").classList.remove("hidden");
-
-  // 🔔 SEND WHATSAPP MESSAGE TO ADMIN
-  const adminWhatsApp = "919556381309"; // ✅ NO + and NO space
+  // ✅ WhatsApp notification (same as before)
+  const adminWhatsApp = "919556381309";
   const orderDetails = newOrder.items.map(
     item => `• ${item.name} × ${item.quantity}`
   ).join('\n');
-
-  const totalAmount = newOrder.items.reduce((sum, item) => sum + item.quantity * item.price, 0);
-
-  const message = `🛒 *New Order Received*\n\n👤 *Name:* ${name}\n📞 *Phone:* ${phone}\n🏠 *Address:* ${addr}, ${pin}\n🧾 *Order ID:* ${newOrder.id}\n\n📦 *Items:*\n${orderDetails}\n\n💰 *Total:* ₹${totalAmount.toFixed(2)}`;
-
+  const message = `*New Order Received*\n\nName: ${name}\nPhone: ${phone}\nAddress: ${addr} - ${pin}\n\nItems:\n${orderDetails}\n\nTotal: ₹${total.toFixed(2)}`;
   const url = `https://wa.me/${adminWhatsApp}?text=${encodeURIComponent(message)}`;
+  setTimeout(() => window.open(url, "_blank"), 500);
 
-  // ✅ Use setTimeout to avoid popup blocker
-  setTimeout(() => {
-    window.open(url, "_blank");
-  }, 500);
+  document.getElementById("orderSuccess").innerHTML = `
+  <div class="p-4 rounded-lg bg-green-100 border border-green-400 text-green-800 text-center">
+    <h2 class="text-xl font-bold mb-2">✅ Order Confirmed!</h2>
+    <p>Your order ID is <span class="font-mono text-blue-600">${latestOrderId}</span></p>
+    <p class="mt-1">Expected delivery: <b>${newOrder.eta}</b></p>
+    <p class="mt-2 text-sm">📦 A WhatsApp confirmation has been sent.</p>
+  </div>
+`;
+document.getElementById("orderSuccess").classList.remove("hidden");
 
   cart = [];
   renderCart();
@@ -413,3 +416,31 @@ if (!isCustomerLoggedIn) showCustomerLogin();
     reader.readAsArrayBuffer(file);
   });
 });
+function showOrderHistory() {
+  const container = document.getElementById("orderHistory");
+  container.classList.remove("hidden");
+
+  const history = JSON.parse(localStorage.getItem("orderHistory") || "[]");
+
+  if (history.length === 0) {
+    container.innerHTML = "<p class='text-gray-600'>❌ No past orders found.</p>";
+    return;
+  }
+
+  container.innerHTML = "<h2 class='text-lg font-bold mb-2'>📋 Your Order History</h2>";
+
+  history.reverse().forEach(order => {
+    const div = document.createElement("div");
+    div.className = "bg-white shadow-md rounded p-3 mb-4 border border-gray-300";
+    div.innerHTML = `
+      <p><b>🆔 Order ID:</b> ${order.id}</p>
+      <p><b>📅 Date:</b> ${order.date}</p>
+      <p><b>💰 Total:</b> ₹${order.total}</p>
+      <p><b>📦 Items:</b></p>
+      <ul class="ml-6 list-disc text-sm">
+        ${order.items.map(i => `<li>${i.name} × ${i.quantity}</li>`).join("")}
+      </ul>
+    `;
+    container.appendChild(div);
+  });
+}
