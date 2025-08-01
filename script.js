@@ -193,12 +193,15 @@ let latestOrderId = "";
 function handleOrder() {
   if (cart.length === 0) return alert("Cart is empty");
 
-  const name = document.getElementById("customerName").value;
-  const phone = document.getElementById("customerPhone").value;
-  const addr = document.getElementById("customerAddress").value;
-  const pin = document.getElementById("customerPincode").value;
+  const name = document.getElementById("customerName").value.trim();
+  const phone = document.getElementById("customerPhone").value.trim();
+  const addr = document.getElementById("customerAddress").value.trim();
+  const pin = document.getElementById("customerPincode").value.trim();
 
-  if (!name || !phone || !addr || !pin) return alert("Fill all details");
+  if (!name || !phone || !addr || !pin) {
+    alert("Please fill all details");
+    return;
+  }
 
   const latestOrderId = "ORDER" + Math.floor(Math.random() * 1000000);
 
@@ -212,15 +215,29 @@ function handleOrder() {
     status: "Pending"
   };
 
-  // Store or push to database here if needed
-
-  const eta = new Date(Date.now() + 2 * 60 * 60 * 1000); // 2 hours from now
+  const eta = new Date(Date.now() + 2 * 60 * 60 * 1000);
   const deliveryTime = eta.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  
+
   document.getElementById("orderSuccess").innerHTML =
     `✅ <b>Order Placed!</b><br>Your order will be delivered by <b>${deliveryTime}</b>.<br>Thank you for shopping with us!`;
-  
   document.getElementById("orderSuccess").classList.remove("hidden");
+
+  // 🔔 SEND WHATSAPP MESSAGE TO ADMIN
+  const adminWhatsApp = "919556381309"; // ✅ NO + and NO space
+  const orderDetails = newOrder.items.map(
+    item => `• ${item.name} × ${item.quantity}`
+  ).join('\n');
+
+  const totalAmount = newOrder.items.reduce((sum, item) => sum + item.quantity * item.price, 0);
+
+  const message = `🛒 *New Order Received*\n\n👤 *Name:* ${name}\n📞 *Phone:* ${phone}\n🏠 *Address:* ${addr}, ${pin}\n🧾 *Order ID:* ${newOrder.id}\n\n📦 *Items:*\n${orderDetails}\n\n💰 *Total:* ₹${totalAmount.toFixed(2)}`;
+
+  const url = `https://wa.me/${adminWhatsApp}?text=${encodeURIComponent(message)}`;
+
+  // ✅ Use setTimeout to avoid popup blocker
+  setTimeout(() => {
+    window.open(url, "_blank");
+  }, 500);
 
   cart = [];
   renderCart();
