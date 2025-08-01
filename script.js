@@ -1,17 +1,17 @@
 // ✅ Initial Data
 let products = [
-  { id: 1, name: "NEUROBION FORTE INJ", price: 21.77, stock: 90, expiry: "2026-05", hsn: "30045010", image: "neurobion-forte-injection.webp" },
-  { id: 2, name: "PIPERAZINE SUSP", price: 33.95, stock: 14, expiry: "2027-03", hsn: "30049011", image: "PIPERAZINE SUSP.jpg" },
-  { id: 3, name: "SKF ENERGY POWDER", price: 16.50, stock: 5, expiry: "2027-01", hsn: "21069099", image: "SKF ENERGY POWDER.jpg" },
-  { id: 4, name: "STAYFREE XL 6", price: 48.00, stock: 10, expiry: "2026-12", hsn: "96190010", image: "STAYFREE XL 6.webp" },
-  { id: 5, name: "DICLOTAL INJ", price: 5.65, stock: 50, expiry: "2026-11-", hsn: "30041010", image: "diclotal.jpeg" },
-  { id: 6, name: "TAXIM 500MG INJ", price: 27.00, stock: 40, expiry: "2026-12", hsn: "30042019", image: "TAXIM 500.avif" },
-  { id: 7, name: "CHYAWANPRASH 500 GM", price: 235.00, stock: 30, expiry: "2027-01", hsn: "21069099", image: "CHYAWANPRASH.jpg" },
-  { id: 8, name: "LACTODEX-1", price: 1055.00, stock: 20, expiry: "2026-10", hsn: "21069020", image: "LACT0183_L.jpg" },
-  { id: 9, name: "Vertistar -MD 8 TAB", price: 65.67, stock: 25, expiry: "2026-09", hsn: "30045090", image: "vertistar-md.jpg" },
-  { id: 11, name: "XONE 1GR INJ", price: 71.09, stock: 22, expiry: "2026-11", hsn: "30041090", image: "xon0001.webp" },
-  { id: 12, name: "HAJMOLA IMLI SACHET", price: 170.00, stock: 35, expiry: "2026-10", hsn: "30045010", image: "losil.webp" },
-  { id: 13, name: "AMLOVAS 5MG TAB", price: 42.00, stock: 60, expiry: "2027-01", hsn: "30049099", image: "amlovas.webp" }
+  { id: 1, name: "NEUROBION FORTE INJ", price: 21.77, stock: 90, expiry: "2026-05", hsn: "30045010", image: "images/neurobion-forte-injection.webp" },
+  { id: 2, name: "PIPERAZINE SUSP", price: 33.95, stock: 14, expiry: "2027-03", hsn: "30049011", image: "images/PIPERAZINE SUSP.jpg" },
+  { id: 3, name: "SKF ENERGY POWDER", price: 16.50, stock: 5, expiry: "2027-01", hsn: "21069099", image: "images/SKF ENERGY POWDER.jpg" },
+  { id: 4, name: "STAYFREE XL 6", price: 48.00, stock: 10, expiry: "2026-12", hsn: "96190010", image: "images/STAYFREE XL 6.webp" },
+  { id: 5, name: "DICLOTAL INJ", price: 5.65, stock: 50, expiry: "2026-11-", hsn: "30041010", image: "images/diclotal.jpeg" },
+  { id: 6, name: "TAXIM 500MG INJ", price: 27.00, stock: 40, expiry: "2026-12", hsn: "30042019", image: "images/TAXIM 500.avif" },
+  { id: 7, name: "CHYAWANPRASH 500 GM", price: 235.00, stock: 30, expiry: "2027-01", hsn: "21069099", image: "images/CHYAWANPRASH.jpg" },
+  { id: 8, name: "LACTODEX-1", price: 1055.00, stock: 20, expiry: "2026-10", hsn: "21069020", image: "images/LACT0183_L.jpg" },
+  { id: 9, name: "Vertistar -MD 8 TAB", price: 65.67, stock: 25, expiry: "2026-09", hsn: "30045090", image: "images/vertistar-md.jpg" },
+  { id: 11, name: "XONE 1GR INJ", price: 71.09, stock: 22, expiry: "2026-11", hsn: "30041090", image: "images/xon0001.webp" },
+  { id: 12, name: "HAJMOLA IMLI SACHET", price: 170.00, stock: 35, expiry: "2026-10", hsn: "30045010", image: "images/losil.webp" },
+  { id: 13, name: "AMLOVAS 5MG TAB", price: 42.00, stock: 60, expiry: "2027-01", hsn: "30049099", image: "images/amlovas.webp" }
 ];
 
 let cart = [];
@@ -242,6 +242,7 @@ function handleOrder() {
   cart = [];
   renderCart();
 }
+
 
 
 function approveOrder(id) {
