@@ -27,6 +27,12 @@
         MEDICINE STORE
       </span>
     </div>
+    <button onclick="showOrderHistory()" class="bg-blue-600 text-white px-4 py-2 rounded mt-4">
+      📜 Show My Order History
+    </button>
+    
+    <!-- And add this div somewhere in the page -->
+    <div id="orderHistory" class="p-4 hidden"></div>
     
     
     
@@ -137,16 +143,56 @@
       <input id="customerAddress" placeholder="Address" class="border p-2 rounded" />
       <input id="customerPincode" placeholder="Pincode" class="border p-2 rounded" />
     </div>
-    <!-- Payment Options -->
-<div class="mt-6">
-  <h3 class="text-lg font-semibold mb-2">Choose Payment Option</h3>
-  <div class="space-x-4">
-    <button onclick="handleOrder()" class="bg-green-600 text-white px-4 py-2 rounded">Cash on Delivery</button>
-    <button onclick="showUPIPayment()" class="bg-purple-700 text-white px-4 py-2 rounded">Pay with UPI</button>
+   <!-- 💳 Payment Options -->
+<div class="mt-8 bg-white shadow-md rounded-lg p-6 max-w-2xl mx-auto">
+  <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Choose Payment Method</h2>
+  <div class="flex flex-col sm:flex-row justify-center items-center gap-6">
+    <!-- COD Button -->
+    <button onclick="handleOrder()"
+      class="w-48 bg-green-600 hover:bg-green-700 text-white py-3 px-6 rounded-lg text-lg font-semibold shadow-md transition">
+      🏠 Cash on Delivery
+    </button>
+
+    <!-- UPI Button -->
+    <button onclick="showUPIPayment()"
+      class="w-48 bg-purple-700 hover:bg-purple-800 text-white py-3 px-6 rounded-lg text-lg font-semibold shadow-md transition">
+      📱 Pay with UPI
+    </button>
   </div>
 </div>
 
+<!-- 🔎 Track Order Feature -->
+<div class="mt-6">
+  <h3 class="text-lg font-semibold mb-2">Track Your Order</h3>
+  <div class="flex items-center gap-2">
+    <input id="orderTrackInput" placeholder="Enter Order ID (e.g. ORDER123456)" class="border p-2 rounded w-full max-w-xs" />
+    <button onclick="trackMyOrder()" class="bg-blue-600 text-white px-4 py-2 rounded">Track</button>
+  </div>
+</div>
+
+<script>
+  function trackMyOrder() {
+    const id = document.getElementById("orderTrackInput").value.trim();
+    if (id) {
+      window.open(`track.html?id=${id}`, "_blank");
+    } else {
+      alert("Please enter a valid Order ID.");
+    }
+  }
+</script>
+
+
+
 <div id="orderSuccess" class="mt-4 text-green-700 font-bold hidden"></div>
+<!-- ✅ My Orders Section -->
+<button onclick="showOrderHistory()" class="bg-blue-600 text-white px-4 py-2 rounded mt-4">
+  <!-- ✅ Order Confirmation Message -->
+<div id="orderSuccess" class="hidden mt-6"></div>
+
+  📋 Show My Orders
+</button>
+
+<div id="orderHistory" class="hidden mt-4 bg-white border border-gray-200 rounded p-4 shadow text-sm"></div>
 
   <!-- Admin Dashboard Placeholder -->
   <section id="adminDashboard" class="hidden p-4">
@@ -284,6 +330,18 @@ function togglePassword() {
     </form>
 
     <p class="text-xs text-center text-gray-400 dark:text-gray-500 mt-4">For authorized users only</p>
+  </div>
+</div>
+<!-- UPI Modal -->
+<div id="upiModal" class="modal hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+  <div class="bg-white p-6 rounded-lg text-center max-w-sm w-full shadow-xl">
+    <h3 class="text-xl font-bold text-green-700 mb-4">📲 Scan & Pay</h3>
+    <img src="images/upi-qr.png" alt="UPI QR Code" class="w-48 mx-auto border rounded mb-3" />
+    <p class="mb-1 text-gray-600">or send to UPI ID:</p>
+    <p class="text-lg font-mono text-gray-800 font-semibold mb-4">6372556219@ptsbi</p>
+    <button onclick="confirmUPIPayment()" class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded">✅ I have paid</button>
+    <br />
+    <button onclick="document.getElementById('upiModal').classList.add('hidden')" class="text-red-500 mt-3 underline">Cancel</button>
   </div>
 </div>
 
