@@ -200,30 +200,31 @@ function handleOrder() {
 
   if (!name || !phone || !addr || !pin) return alert("Fill all details");
 
+  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0); // ✅ FIX
+
+  const newOrderId = "ORDER" + Date.now();
   const etaTime = new Date(Date.now() + 2 * 60 * 60 * 1000); // 2 hours from now
   const etaString = etaTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  const etaDate = etaTime.toLocaleDateString();
-  
+
   const newOrder = {
-    id: latestOrderId,
+    id: newOrderId,
     name,
     phone,
     address: addr,
     pincode: pin,
     items: [...cart],
-    total: total.toFixed(2),
+    total: total.toFixed(2), // ✅ Now it works
     status: "Pending",
     date: new Date().toLocaleString(),
     eta: `Today by ${etaString}`
   };
-  
 
-  // ✅ Save to order history in localStorage
+  // Save to order history
   let history = JSON.parse(localStorage.getItem("orderHistory") || "[]");
   history.push(newOrder);
   localStorage.setItem("orderHistory", JSON.stringify(history));
 
-  // ✅ WhatsApp notification (same as before)
+  // WhatsApp Notification
   const adminWhatsApp = "919556381309";
   const orderDetails = newOrder.items.map(
     item => `• ${item.name} × ${item.quantity}`
@@ -232,21 +233,13 @@ function handleOrder() {
   const url = `https://wa.me/${adminWhatsApp}?text=${encodeURIComponent(message)}`;
   setTimeout(() => window.open(url, "_blank"), 500);
 
-  document.getElementById("orderSuccess").innerHTML = `
-  <div class="p-4 rounded-lg bg-green-100 border border-green-400 text-green-800 text-center">
-    <h2 class="text-xl font-bold mb-2">✅ Order Confirmed!</h2>
-    <p>Your order ID is <span class="font-mono text-blue-600">${latestOrderId}</span></p>
-    <p class="mt-1">Expected delivery: <b>${newOrder.eta}</b></p>
-    <p class="mt-2 text-sm">📦 A WhatsApp confirmation has been sent.</p>
-  </div>
-`;
-document.getElementById("orderSuccess").classList.remove("hidden");
+  document.getElementById("orderSuccess").innerHTML =
+    `✅ <b>Order Placed!</b><br>Your order ID is <b>${newOrderId}</b>. Thank you!`;
+  document.getElementById("orderSuccess").classList.remove("hidden");
 
   cart = [];
   renderCart();
 }
-
-
 
 function approveOrder(id) {
   const order = orders.find(o => o.id === id);
